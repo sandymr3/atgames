@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { useRef } from "react";
+import { useReducedMotion } from "motion/react";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import TamilParticleBackground from "@/components/TamilParticleBackground";
 
@@ -16,6 +16,10 @@ import TamilParticleBackground from "@/components/TamilParticleBackground";
 
    Every plane is positioned as a percentage of the plate, inside one box that
    emulates object-cover, so the registration holds at any viewport.
+
+   The tube light runs its own blackout cycle, and the title changes language
+   *in the dark*: Tamil is what the room says until the light cuts out, and
+   English is what is on the board when it comes back.
    ========================================================================== */
 
 const PLANES = {
@@ -32,39 +36,55 @@ const pct = (p: { l: number; t: number; w: number; h: number }) => ({
   height: `${p.h}%`,
 });
 
+/** seconds the room stays lit between failures */
+const LIT_MIN = 4.5;
+const LIT_MAX = 9;
+
 export default function ShadowHero() {
   const root = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
-  const [lang, setLang] = useState<"ta" | "en">("ta");
 
   useGSAP(
     () => {
       if (reduced) return;
 
-      // Pin the frame and pull the planes apart underneath it: the viewer's
-      // eye stays put while the room opens up. Rates are deliberately far
-      // apart — subtle parallax just looks like a rendering wobble.
+      const q = gsap.utils.selector(root);
+      const lamp = q("[data-lamp]");
+      const dark = q("[data-fx='blackout']");
+      const titles = q("[data-title]");
+      const titleWrap = q("[data-plane='title']");
+
+      /* ---------------------------------------------------- scroll parallax */
+      // force3D keeps every plane on its own compositor layer, so the scrub
+      // only ever hands the GPU a new matrix instead of repainting.
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: root.current,
           start: "top top",
           end: "+=125%",
-          scrub: 0.8,
+          scrub: 0.6,
           pin: true,
           anticipatePin: 1,
+          invalidateOnRefresh: true,
+          // Blend modes have to sample the backdrop; the global grain is the
+          // one overlay that is genuinely expensive over a moving scene.
+          onToggle: (self) => {
+            document.documentElement.dataset.pinned = self.isActive ? "1" : "0";
+          },
         },
+        defaults: { ease: "none", force3D: true },
       });
 
       // Viewport units, not yPercent: yPercent is relative to each element's
       // own height, so the small handprint would travel fewer pixels than the
       // huge title and the depth order would come out backwards.
-      tl.to("[data-plane='plate']", { y: "-3vh", scale: 1.13, ease: "none" }, 0)
-        .to("[data-plane='ghost']", { y: "-8vh", ease: "none" }, 0)
-        .to("[data-plane='title']", { y: "-14vh", ease: "none" }, 0)
-        .to("[data-plane='hand']", { y: "-19vh", ease: "none" }, 0)
-        .to("[data-fx='blood']", { opacity: 0.7, ease: "none" }, 0)
-        .to("[data-fx='dark']", { opacity: 0.9, ease: "none" }, 0)
-        .to("[data-hud]", { opacity: 0, y: -40, ease: "none" }, 0);
+      tl.to("[data-plane='plate']", { y: "-3vh", scale: 1.08 }, 0)
+        .to("[data-plane='ghost']", { y: "-8vh" }, 0)
+        .to(titleWrap, { y: "-14vh" }, 0)
+        .to("[data-plane='hand']", { y: "-19vh" }, 0)
+        .to("[data-fx='blood']", { opacity: 0.7 }, 0)
+        .to("[data-fx='falloff']", { opacity: 1 }, 0)
+        .to("[data-hud]", { opacity: 0, y: -40 }, 0);
 
       // The silhouette breathes on its own clock, unhooked from scroll. It
       // lives on an inner node so this scale never fights the scrubbed y.
@@ -77,7 +97,66 @@ export default function ShadowHero() {
         yoyo: true,
       });
 
+      /* ------------------------------------------------------ the bad tube */
+      // Tamil first. Every blackout hands the board to the other language.
+      let lit = 0;
+
+      const swap = () => {
+        lit = lit === 0 ? 1 : 0;
+        gsap.set(titles, { autoAlpha: (i: number) => (i === lit ? 1 : 0) });
+      };
+
+      const strike = () => {
+        // A failing ballast stutters before it dies and gropes for the arc on
+        // the way back. Even intervals read as a heartbeat, not a fault.
+        const tlLight = gsap.timeline({ onComplete: schedule });
+        const cut = (lampTo: number, darkTo: number, d: number) =>
+          tlLight
+            .to(lamp, { opacity: lampTo, duration: d, ease: "none" })
+            .to(dark, { opacity: darkTo, duration: d, ease: "none" }, "<");
+
+        cut(0.22, 0.58, 0.05);
+        cut(1, 0, 0.06);
+        cut(0.08, 0.82, 0.04);
+        cut(0.78, 0.14, 0.07);
+        cut(0, 0.97, 0.09);
+
+        // pitch dark: the board changes underneath the blackout
+        tlLight.add(swap).to({}, { duration: gsap.utils.random(0.34, 0.6) });
+
+        // false start, then the arc catches
+        cut(0.5, 0.42, 0.05);
+        cut(0.06, 0.9, 0.07);
+        tlLight
+          .to(lamp, { opacity: 1, duration: 0.55, ease: "power2.out" })
+          .to(dark, { opacity: 0, duration: 0.55, ease: "power2.out" }, "<")
+          // The new word jitters as the tube catches, like a bad frame hold.
+          // Both land on the wrapper, not on titles[lit] — `lit` would be read
+          // when the timeline is *built*, which is before swap() has flipped
+          // it, so that would stutter the language we just left.
+          .fromTo(
+            titleWrap,
+            { x: -7 },
+            { x: 0, duration: 0.16, ease: "steps(3)" },
+            "<",
+          )
+          .fromTo(
+            titleWrap,
+            { opacity: 0.4 },
+            { opacity: 1, duration: 0.24, ease: "steps(4)" },
+            "<",
+          );
+      };
+
+      const schedule = () =>
+        gsap.delayedCall(gsap.utils.random(LIT_MIN, LIT_MAX), strike);
+
+      schedule();
       ScrollTrigger.refresh();
+
+      return () => {
+        delete document.documentElement.dataset.pinned;
+      };
     },
     { scope: root, dependencies: [reduced] },
   );
@@ -87,12 +166,19 @@ export default function ShadowHero() {
       ref={root}
       className="relative h-[100svh] overflow-hidden bg-[#050404]"
     >
+      {/* The room's name, for anything that cannot see the chalk. */}
+      <h1 className="sr-only">Fourth Shadow — நான்காம் நிழல்</h1>
+
       {/* object-cover, hand-rolled, so the planes stay registered to the plate */}
       <div className="absolute left-1/2 top-1/2 aspect-4/3 w-[max(100vw,133.4svh)] -translate-x-1/2 -translate-y-1/2">
-        <div data-plane="plate" className="absolute inset-0 will-change-transform">
+        <div
+          data-plane="plate"
+          className="absolute inset-0 will-change-transform [backface-visibility:hidden]"
+        >
           {/* unoptimized on purpose: tools/prepare_assets.py already emits
-              these at web size and quality, and re-encoding a 2560px WebP
-              through the image optimizer stalls the hero on first paint. */}
+              these at web size, quality *and colour grade* — the grade used to
+              be a CSS filter here, which re-filtered the whole image on every
+              scrub frame. */}
           <Image
             src="/game/scene-plate.webp"
             alt=""
@@ -100,13 +186,13 @@ export default function ShadowHero() {
             priority
             unoptimized
             sizes="120vw"
-            className="object-cover brightness-[1.04] contrast-[1.1] saturate-[0.88]"
+            className="object-cover"
           />
         </div>
 
         <div
           data-plane="ghost"
-          className="absolute will-change-transform"
+          className="absolute will-change-transform [backface-visibility:hidden]"
           style={pct(PLANES.ghost)}
         >
           <div data-breathe className="absolute inset-0">
@@ -123,7 +209,7 @@ export default function ShadowHero() {
 
         <div
           data-plane="hand"
-          className="absolute will-change-transform"
+          className="absolute will-change-transform [backface-visibility:hidden]"
           style={pct(PLANES.hand)}
         >
           <Image
@@ -136,43 +222,58 @@ export default function ShadowHero() {
           />
         </div>
 
-        {/* the chalk logotype, in whichever language is selected */}
+        {/* Both logotypes are mounted from the start and cross-cut by opacity.
+            Swapping the src instead would refetch mid-blackout and flash. */}
         <div
           data-plane="title"
-          className="absolute will-change-transform"
+          className="absolute will-change-transform [backface-visibility:hidden]"
           style={pct(PLANES.title)}
         >
-          <AnimatePresence initial={false} mode="sync">
-            <motion.div
-              key={lang}
-              className="absolute inset-0"
-              initial={{ opacity: 0, filter: "blur(6px)" }}
-              animate={{ opacity: 1, filter: "blur(0px)" }}
-              exit={{ opacity: 0, filter: "blur(6px)" }}
-              transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-            >
-              <Image
-                src={lang === "ta" ? "/game/title-ta.webp" : "/game/title-en.webp"}
-                alt={lang === "ta" ? "நான்காம் நிழல்" : "Fourth Shadow"}
-                fill
-                priority
-                unoptimized
-                sizes="60vw"
-                className="object-contain"
-              />
-            </motion.div>
-          </AnimatePresence>
+          <div data-title className="absolute inset-0">
+            <Image
+              src="/game/title-ta.webp"
+              alt=""
+              fill
+              priority
+              unoptimized
+              sizes="60vw"
+              className="object-contain"
+            />
+          </div>
+          <div
+            data-title
+            className="absolute inset-0"
+            style={{ opacity: 0, visibility: "hidden" }}
+          >
+            <Image
+              src="/game/title-en.webp"
+              alt=""
+              fill
+              priority
+              unoptimized
+              sizes="60vw"
+              className="object-contain"
+            />
+          </div>
         </div>
 
-        {/* the failing tube light, blown out over the ceiling fitting */}
+        {/* the failing tube, blown out over the ceiling fitting */}
         <div
+          data-lamp
           aria-hidden
-          className="flicker pointer-events-none absolute left-1/2 top-[2%] h-[22%] w-[40%] -translate-x-1/2 mix-blend-screen"
-          style={{
-            background:
-              "radial-gradient(ellipse at 50% 32%, rgba(255,236,196,0.26) 0%, rgba(255,190,110,0.08) 36%, transparent 68%)",
-          }}
-        />
+          className="pointer-events-none absolute inset-0"
+        >
+          {/* screen-blended, because a light source adds rather than covers.
+              It is a small element, so the backdrop readback is cheap — unlike
+              the full-screen overlays, which are all normal-blend now. */}
+          <div
+            className="hum absolute left-1/2 top-[2%] h-[22%] w-[40%] -translate-x-1/2 mix-blend-screen"
+            style={{
+              background:
+                "radial-gradient(ellipse at 50% 32%, rgba(255,236,196,0.26) 0%, rgba(255,190,110,0.08) 36%, transparent 68%)",
+            }}
+          />
+        </div>
 
         {/* the room is lit by one failing tube: everything away from it falls off */}
         <div
@@ -185,30 +286,30 @@ export default function ShadowHero() {
         />
       </div>
 
-      {/* chalk dust — the studio's letter field, inverted */}
+      {/* chalk dust — the studio's letter field, inverted. Capped at 30fps so
+          it isn't fighting the scrub for the main thread. */}
       <TamilParticleBackground
         mode="chalk"
-        density={0.5}
+        density={0.45}
         speed={0.7}
         opacity={0.55}
+        fps={30}
         interactive={false}
       />
 
       {/* blood bloom, ramped by scroll */}
-      {/* Screen, not multiply: on a scene this dark, multiplying red just
-          removes what little is left. Adding red light is the horror move. */}
       <div
         aria-hidden
         data-fx="blood"
-        className="pointer-events-none absolute inset-0 opacity-20 mix-blend-screen"
+        className="pointer-events-none absolute inset-0 opacity-20"
         style={{
           background:
-            "radial-gradient(120% 95% at 78% 92%, rgba(140,20,24,0.62) 0%, rgba(70,8,12,0.34) 40%, transparent 74%)",
+            "radial-gradient(120% 95% at 78% 92%, rgba(150,26,30,0.34) 0%, rgba(70,8,12,0.2) 40%, transparent 74%)",
         }}
       />
       <div
         aria-hidden
-        data-fx="dark"
+        data-fx="falloff"
         className="pointer-events-none absolute inset-0 opacity-0"
         style={{
           background:
@@ -227,33 +328,13 @@ export default function ShadowHero() {
         data-hud
         className="pointer-events-none absolute inset-0 z-20 flex flex-col justify-between p-5 sm:p-8"
       >
-        <div className="flex items-start justify-between pt-[74px]">
-          <div>
-            <p className="tamil text-[0.85rem] tracking-[0.2em] text-chalk/70">
-              வகுப்பு: ௭-அ
-            </p>
-            <p className="mt-2 text-[0.62rem] uppercase tracking-[0.32em] text-chalk/35">
-              Class 7-A · Attendance 15
-            </p>
-          </div>
-
-          <div className="pointer-events-auto flex items-center gap-px border border-chalk/15 bg-black/30 backdrop-blur-sm">
-            {(["ta", "en"] as const).map((code) => (
-              <button
-                key={code}
-                type="button"
-                onClick={() => setLang(code)}
-                aria-pressed={lang === code}
-                className={`px-4 py-2 text-[0.6rem] uppercase tracking-[0.24em] transition-colors duration-400 ${
-                  lang === code
-                    ? "bg-chalk/90 text-[#0b0908]"
-                    : "text-chalk/50 hover:text-chalk"
-                }`}
-              >
-                {code === "ta" ? "தமிழ்" : "EN"}
-              </button>
-            ))}
-          </div>
+        <div className="pt-[74px]">
+          <p className="tamil text-[0.85rem] tracking-[0.2em] text-chalk/70">
+            வகுப்பு: ௭-அ
+          </p>
+          <p className="mt-2 text-[0.62rem] uppercase tracking-[0.32em] text-chalk/35">
+            Class 7-A · Attendance 15
+          </p>
         </div>
 
         <div className="flex items-end justify-between gap-6">
@@ -265,6 +346,13 @@ export default function ShadowHero() {
           </p>
         </div>
       </div>
+
+      {/* the blackout sits over everything in the room, HUD included */}
+      <div
+        aria-hidden
+        data-fx="blackout"
+        className="pointer-events-none absolute inset-0 z-30 bg-black opacity-0"
+      />
     </section>
   );
 }
