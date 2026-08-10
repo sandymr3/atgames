@@ -26,9 +26,12 @@ export default function SiteHeader() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
+      /* A near-opaque tint rather than a heavy backdrop-blur: blurring a
+         backdrop that is itself moving means re-running the blur every scroll
+         frame, and over a scene this dark the two are indistinguishable. */
+      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-500 ${
         scrolled
-          ? "border-b border-white/5 bg-[color-mix(in_oklab,var(--page)_82%,transparent)] backdrop-blur-xl"
+          ? "border-b border-white/5 bg-[color-mix(in_oklab,var(--page)_94%,transparent)]"
           : "border-b border-transparent"
       }`}
     >

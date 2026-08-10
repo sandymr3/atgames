@@ -70,6 +70,9 @@ export type TamilParticleBackgroundProps = {
   interactive?: boolean;
   /** peak opacity of the whole field */
   opacity?: number;
+  /** cap the redraw rate; drifting glyphs read identically at 30 and leave
+      the main thread free for a scrubbed scroll timeline elsewhere */
+  fps?: number;
   className?: string;
 };
 
@@ -82,6 +85,7 @@ export default function TamilParticleBackground({
   speed = 1,
   interactive = true,
   opacity = 1,
+  fps = 60,
   className = "",
 }: TamilParticleBackgroundProps) {
   const hostRef = useRef<HTMLDivElement>(null);
@@ -199,14 +203,20 @@ export default function TamilParticleBackground({
     }
 
     /* ----------------------------------------------------------------- draw */
+    const minFrame = 1000 / fps - 1;
+
     function draw(now: number) {
       raf = requestAnimationFrame(draw);
       if (!visible || !onScreen) {
         last = now;
         return;
       }
+      // Skip the frame entirely when we're ahead of the cap. Cheaper than
+      // drawing and throwing it away, and it hands the slot back to whatever
+      // else wants the main thread.
+      if (now - last < minFrame) return;
       // Clamp dt so restoring a backgrounded tab doesn't teleport the field.
-      const dt = Math.min(now - last || 16, 32);
+      const dt = Math.min(now - last || 16, 48);
       last = now;
 
       px += (tx - px) * 0.12;
@@ -343,7 +353,7 @@ export default function TamilParticleBackground({
       window.removeEventListener("pointermove", onPointer);
       window.removeEventListener("pointerleave", onLeave);
     };
-  }, [mode, density, speed, interactive, opacity]);
+  }, [mode, density, speed, interactive, opacity, fps]);
 
   return (
     <div
