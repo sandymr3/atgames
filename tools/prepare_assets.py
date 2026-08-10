@@ -166,6 +166,23 @@ def clean(mask: np.ndarray, open_r: int = 14, close_r: int = 12) -> np.ndarray:
     return m
 
 
+def grade(rgb: np.ndarray, brightness: float, contrast: float,
+          saturation: float) -> np.ndarray:
+    """Bake a colour grade into the pixels, in the same order CSS applies
+    filter: brightness() contrast() saturate().
+
+    This used to be a CSS filter on the plate. A filter on an element that is
+    also being transform-scaled every scrub frame forces a full filter pass
+    over the whole image on every one of those frames, which is what was
+    dropping frames on the game hero. Same look, zero runtime cost.
+    """
+    out = rgb * brightness
+    out = (out - 128.0) * contrast + 128.0
+    grey = luma(out)[..., None]
+    out = grey + (out - grey) * saturation
+    return np.clip(out, 0, 255)
+
+
 def to_png(rgb: np.ndarray, alpha: np.ndarray) -> Image.Image:
     a = np.clip(alpha * 255, 0, 255).astype(np.uint8)
     c = np.clip(rgb, 0, 255).astype(np.uint8)
@@ -405,6 +422,7 @@ def build_scene() -> None:
     erase[ly0:ly1, lx0:lx1] = 0.0
 
     plate = inpaint(base, np.clip(erase, 0, 1), iterations=110)
+    plate = grade(plate, brightness=1.04, contrast=1.10, saturation=0.88)
     plate_img = Image.fromarray(plate.astype(np.uint8), "RGB")
     fit(plate_img, 2560).save(GAME / "scene-plate.webp", "WEBP", quality=84, method=6)
     fit(plate_img, 1280).save(GAME / "scene-plate-sm.webp", "WEBP", quality=82, method=6)
