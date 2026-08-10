@@ -1,0 +1,321 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   AT GAMES — design tokens
+   Tailwind v4 is CSS-first: this @theme block *is* the Tailwind config. Every
+   token below becomes a utility (bg-ink-900, text-ember, font-display, ...).
+
+   The ember ramp is sampled straight out of the studio logo: the gradient in
+   the mark runs 35° hue gold at its top-left down to 8° at its bottom-right.
+   ========================================================================== */
+
+@theme {
+  /* surfaces — near-black, warm-shifted so the ember never looks pasted on */
+  --color-ink-900: #08070a;
+  --color-ink-850: #0b0a0e;
+  --color-ink-800: #101015;
+  --color-ink-700: #16151c;
+  --color-ink-600: #1f1d26;
+
+  /* text */
+  --color-bone: #f2eee9;
+  --color-ash-300: #a9a3af;
+  --color-ash-400: #857f8d;
+  --color-ash-500: #625c6c;
+
+  /* brand ember */
+  --color-ember-gold: #f2a020;
+  --color-ember: #ec6c24;
+  --color-ember-deep: #d44426;
+  --color-ember-ash: #c83c27;
+
+  /* Fourth Shadow */
+  --color-board: #12100e;
+  --color-chalk: #e8e3d8;
+  --color-blood: #7e1216;
+  --color-blood-lit: #b41e1e;
+  --color-rust: #b3702a;
+
+  --font-display: var(--font-michroma), "Arial Black", sans-serif;
+  --font-sans: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
+  --font-tamil: var(--font-tamil), "Latha", serif;
+
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-quint: cubic-bezier(0.83, 0, 0.17, 1);
+
+  --shadow-ember: 0 0 0 1px rgba(236, 108, 36, 0.35),
+    0 18px 60px -20px rgba(212, 68, 38, 0.45);
+}
+
+/* ==========================================================================
+   base
+   ========================================================================== */
+
+@layer base {
+  :root {
+    --grain: 0.055;
+    --page: var(--color-ink-900);
+    --accent: var(--color-ember);
+    /* fractal noise, inlined so the grain costs no request */
+    --grain-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    color-scheme: dark;
+  }
+
+  /* The game route dims the whole shell: colder blacks, blood accent, and a
+     heavier grain so the page itself feels like worse film stock. */
+  [data-theme="horror"] {
+    --grain: 0.085;
+    --page: #060505;
+    --accent: var(--color-blood-lit);
+  }
+
+  html {
+    background: var(--page);
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 900ms var(--ease-expo);
+  }
+
+  body {
+    background: var(--page);
+    color: var(--color-bone);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    letter-spacing: 0.005em;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: #08070a;
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--color-ember);
+    outline-offset: 3px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 9px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-ink-900);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-ink-600);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-ember-deep);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+/* ==========================================================================
+   typographic components
+   ========================================================================== */
+
+@layer components {
+  /* Michroma is very wide; it earns its keep as tracked-out micro-labels and
+     as oversized display, and nowhere in between. */
+  .eyebrow {
+    font-family: var(--font-display);
+    font-size: 0.62rem;
+    line-height: 1;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: var(--color-ash-400);
+  }
+
+  .display {
+    font-family: var(--font-display);
+    line-height: 0.94;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .tamil {
+    font-family: var(--font-tamil);
+    font-feature-settings: "kern";
+  }
+
+  .ember-text {
+    background: linear-gradient(
+      118deg,
+      var(--color-ember-gold) 0%,
+      var(--color-ember) 46%,
+      var(--color-ember-deep) 78%,
+      var(--color-ember-ash) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hairline {
+    border-color: color-mix(in oklab, var(--color-bone) 11%, transparent);
+  }
+
+  /* chalk-on-slate: soft bloom plus a hair of vertical smear */
+  .chalk-text {
+    color: var(--color-chalk);
+    text-shadow: 0 0 18px rgba(232, 227, 216, 0.16),
+      0 1px 0 rgba(232, 227, 216, 0.35), 0 2px 12px rgba(0, 0, 0, 0.9);
+  }
+}
+
+/* ==========================================================================
+   atmosphere
+   ========================================================================== */
+
+@layer utilities {
+  .grain::after {
+    content: "";
+    position: fixed;
+    inset: -50%;
+    pointer-events: none;
+    z-index: 60;
+    opacity: var(--grain);
+    mix-blend-mode: overlay;
+    background-image: var(--grain-url);
+    background-size: 220px 220px;
+    animation: grain-shift 700ms steps(1) infinite;
+  }
+
+  .vignette::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 55;
+    background: radial-gradient(
+      126% 96% at 50% 42%,
+      transparent 46%,
+      rgba(0, 0, 0, 0.26) 80%,
+      rgba(0, 0, 0, 0.6) 100%
+    );
+  }
+
+  .mask-fade-b {
+    mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+  }
+
+  .mask-fade-x {
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 12%,
+      #000 88%,
+      transparent
+    );
+  }
+
+  /* The tube light in the poster is failing, not pulsing — irregular steps
+     read as a bad ballast, a clean sine reads as a heartbeat. */
+  .flicker {
+    animation: flicker 5.5s linear infinite;
+  }
+
+  .drift-slow {
+    animation: drift 26s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes grain-shift {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(-3%, 2%);
+  }
+  50% {
+    transform: translate(2%, -3%);
+  }
+  75% {
+    transform: translate(-2%, -2%);
+  }
+  100% {
+    transform: translate(3%, 1%);
+  }
+}
+
+@keyframes flicker {
+  0%,
+  18%,
+  22%,
+  25%,
+  53%,
+  57%,
+  100% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+  19% {
+    opacity: 0.28;
+  }
+  21% {
+    opacity: 0.86;
+  }
+  23% {
+    opacity: 0.14;
+    filter: brightness(0.5);
+  }
+  54% {
+    opacity: 0.62;
+  }
+  56% {
+    opacity: 0.2;
+  }
+  78% {
+    opacity: 0.94;
+    filter: brightness(1.14);
+  }
+}
+
+@keyframes drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1.02);
+  }
+  to {
+    transform: translate3d(-1.4%, -1%, 0) scale(1.06);
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes scrollcue {
+  0% {
+    transform: translateY(-100%);
+  }
+  60%,
+  100% {
+    transform: translateY(280%);
+  }
+}
+
+@keyframes sweep {
+  from {
+    background-position: -140% 0;
+  }
+  to {
+    background-position: 240% 0;
+  }
+}
