@@ -48,7 +48,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      data-scroll-behavior="smooth"
       className={`${michroma.variable} ${sora.variable} ${tamil.variable} h-full antialiased`}
     >
       <body className="grain vignette relative flex min-h-full flex-col">

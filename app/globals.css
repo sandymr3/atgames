@@ -71,7 +71,16 @@
 
   html {
     background: var(--page);
-    scroll-behavior: smooth;
+    /* No scroll-behavior: smooth. The Fourth Shadow hero drives a pinned,
+       scrubbed GSAP ScrollTrigger, and native smooth-scroll runs its own
+       eased animation toward the scroll target on a timeline the browser
+       owns, separate from the wheel/touch events ScrollTrigger listens to.
+       Reverse direction mid-scroll and that native animation has to redirect
+       from wherever it currently sits, which is what read as the scene
+       "suddenly" jumping instead of scaling continuously — the scrub was
+       tracking the browser's own catch-up animation, not the gesture. The
+       site has no anchor links that would benefit from smooth-scroll, so
+       there's nothing to trade off by leaving this at the default `auto`. */
     -webkit-tap-highlight-color: transparent;
     transition: background 900ms var(--ease-expo);
   }
@@ -109,9 +118,6 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
     *,
     *::before,
     *::after {
