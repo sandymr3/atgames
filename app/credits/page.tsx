@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Reveal from "@/components/Reveal";
 import TamilParticleBackground from "@/components/TamilParticleBackground";
+import ContributorAvatar from "@/components/credits/ContributorAvatar";
 import { CREDITS, SOCIALS, STUDIO } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -33,17 +34,29 @@ export default function CreditsPage() {
         <ul className="border-t border-white/8">
           {CREDITS.map((c, i) => (
             <Reveal key={c.role} delay={Math.min(i * 0.05, 0.3)}>
-              <li className="group relative grid grid-cols-1 items-baseline gap-2 border-b border-white/8 py-7 transition-colors duration-500 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] sm:gap-8">
+              <li className="group relative flex items-center gap-5 border-b border-white/8 py-6 transition-colors duration-500 sm:grid sm:grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)_auto] sm:items-center sm:gap-8">
                 {/* ember wash sweeps in behind the row */}
                 <span
                   aria-hidden
                   className="absolute inset-0 -z-10 origin-left scale-x-0 bg-linear-to-r from-ember/8 to-transparent transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-x-100"
                 />
-                <span className="text-[0.78rem] uppercase tracking-[0.2em] text-ash-400 transition-colors duration-500 group-hover:text-ember">
-                  {c.role}
-                </span>
-                <span className="tamil text-[0.95rem] text-ash-500">{c.ta}</span>
-                <span className="font-display text-sm text-bone">{c.name}</span>
+                <ContributorAvatar
+                  photo={c.photo}
+                  label={c.name !== "—" ? c.name : c.role}
+                />
+                {/* display:contents at sm+ so these three lines drop straight
+                    into the row's grid columns instead of staying stacked */}
+                <div className="flex min-w-0 flex-1 flex-col gap-1.5 sm:contents">
+                  <span className="text-[0.78rem] uppercase tracking-[0.2em] text-ash-400 transition-colors duration-500 group-hover:text-ember">
+                    {c.role}
+                  </span>
+                  <span className="tamil text-[0.85rem] text-ash-500 sm:text-[0.95rem]">
+                    {c.ta}
+                  </span>
+                  <span className="font-display text-sm text-bone sm:text-right">
+                    {c.name}
+                  </span>
+                </div>
               </li>
             </Reveal>
           ))}
@@ -51,8 +64,9 @@ export default function CreditsPage() {
 
         <Reveal delay={0.1}>
           <p className="mt-8 max-w-xl text-[0.8rem] leading-relaxed text-ash-500">
-            Names go up when the people behind them are ready to have them up.
-            Everyone credited above is credited by role in the meantime.
+            Names — and faces — go up when the people behind them are ready to
+            have them up. Everyone credited above is credited by role in the
+            meantime.
           </p>
         </Reveal>
       </section>

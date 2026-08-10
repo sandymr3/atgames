@@ -81,14 +81,22 @@ export const UPCOMING = [
   { code: "PROJECT ௩", note: "Untitled — Sangam-era action" },
 ] as const;
 
+/**
+ * `photo` is optional and null until someone supplies one. Drop an image in
+ * `public/credits/` (square, ≥256px, sensible file size) and point this field
+ * at it, e.g. `photo: "/credits/priya.jpg"` — ContributorAvatar falls back to
+ * the studio mark when it's null, so entries without a photo never look broken.
+ */
 export const CREDITS = [
-  { role: "Creative Director", name: "—", ta: "படைப்பு இயக்குநர்" },
-  { role: "Game Design", name: "—", ta: "விளையாட்டு வடிவமைப்பு" },
-  { role: "Art Direction", name: "—", ta: "கலை இயக்கம்" },
-  { role: "Environment & Lighting", name: "—", ta: "சூழல் & ஒளி" },
-  { role: "Narrative & Tamil Writing", name: "—", ta: "கதை & தமிழ் எழுத்து" },
-  { role: "Sound Design", name: "—", ta: "ஒலி வடிவமைப்பு" },
-  { role: "Engineering", name: "—", ta: "பொறியியல்" },
+  { role: "Creative Director", name: "—", ta: "படைப்பு இயக்குநர்", photo: null },
+  { role: "Game Design", name: "—", ta: "விளையாட்டு வடிவமைப்பு", photo: null },
+  { role: "Art Direction", name: "—", ta: "கலை இயக்கம்", photo: null },
+  { role: "Environment & Lighting", name: "—", ta: "சூழல் & ஒளி", photo: null },
+  { role: "Narrative & Tamil Writing", name: "—", ta: "கதை & தமிழ் எழுத்து", photo: null },
+  { role: "Sound Design", name: "—", ta: "ஒலி வடிவமைப்பு", photo: null },
+  { role: "Engineering", name: "—", ta: "பொறியியல்", photo: null },
+  { role: "Web Dev & Tech Support", name: "—", ta: "இணையதளம் & தொழில்நுட்ப ஆதரவு", photo: null },
+  { role: "Marketing", name: "—", ta: "சந்தைப்படுத்தல்", photo: null },
 ] as const;
 
 /** Handles are placeholders until the accounts exist. */

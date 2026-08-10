@@ -24,7 +24,10 @@ npm run build
   `@theme` block *is* the config; there is no `tailwind.config.js`. Colours, fonts,
   easings, the grain/vignette/flicker utilities and the horror theme override are all here.
 - **`lib/site.ts`** — all copy, nav, credits, socials, game metadata. Edit content here,
-  not in the components.
+  not in the components. To give a credit a photo: drop a square image (≥256px) in
+  `public/credits/` and set that entry's `photo` field to its path — entries with
+  `photo: null` fall back to the studio mark (`components/credits/ContributorAvatar.tsx`),
+  so an empty roster never looks broken.
 - **`lib/lockup.ts`** — generated logo outline data (see below).
 
 ## Assets
