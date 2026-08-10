@@ -45,10 +45,13 @@ export default function Hero() {
           <AtLockup className="w-full" />
         </motion.div>
 
+        {/* Delays here trail AtLockup's own timeline (dot lands ~3.1s) by the
+            same offsets as before — only shifted later to match the mark's
+            slower, fully-completing draw-in. */}
         <motion.p
           initial={reduced ? false : { opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 2.05, ease }}
+          transition={{ duration: 1, delay: 2.75, ease }}
           className="mx-auto mt-10 max-w-md text-center text-[0.78rem] uppercase leading-relaxed tracking-[0.28em] text-ash-400"
         >
           {STUDIO.tagline}
@@ -57,7 +60,7 @@ export default function Hero() {
         <motion.div
           initial={reduced ? false : { opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 2.25, ease }}
+          transition={{ duration: 1, delay: 2.95, ease }}
           className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
         >
           <Link
@@ -82,7 +85,7 @@ export default function Hero() {
       <motion.div
         initial={reduced ? false : { opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 2.6 }}
+        transition={{ duration: 1, delay: 3.3 }}
         className="absolute inset-x-0 bottom-8 z-10 flex items-end justify-between px-5 sm:px-8"
       >
         <span className="eyebrow hidden sm:block">Scroll</span>
