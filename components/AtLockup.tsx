@@ -1,13 +1,13 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
-import { DOT, LOCKUP_VIEWBOX, MARK, WORDMARK } from "@/lib/lockup";
+import { DOT, DOT_GRAD, LOCKUP_VIEWBOX, MARK, WORDMARK } from "@/lib/lockup";
 
 /**
  * The studio lockup, inlined as real SVG so each piece can be animated:
  * the mark draws itself in as a stroke, floods with the ember gradient, then
- * the six wordmark letters wipe up one after another and the dot inside the
- * "G" drops in last.
+ * the wordmark letters (ATTI GAMES) wipe up one after another and the dot
+ * standing in for the second "A" drops in last.
  */
 export default function AtLockup({ className = "" }: { className?: string }) {
   const reduced = useReducedMotion();
@@ -17,7 +17,7 @@ export default function AtLockup({ className = "" }: { className?: string }) {
     <svg
       viewBox={LOCKUP_VIEWBOX}
       role="img"
-      aria-label="AT Games"
+      aria-label="ATTI Games"
       className={className}
     >
       <defs>
@@ -37,10 +37,10 @@ export default function AtLockup({ className = "" }: { className?: string }) {
         <linearGradient
           id="lockup-ember-sm"
           gradientUnits="userSpaceOnUse"
-          x1="377"
-          y1="296"
-          x2="414"
-          y2="333"
+          x1={DOT_GRAD.x1}
+          y1={DOT_GRAD.y1}
+          x2={DOT_GRAD.x2}
+          y2={DOT_GRAD.y2}
         >
           <stop offset="0" stopColor="#f2a020" />
           <stop offset=".55" stopColor="#ec6c24" />
@@ -110,7 +110,7 @@ export default function AtLockup({ className = "" }: { className?: string }) {
       <motion.g
         initial={reduced ? false : { opacity: 0, scale: 0.4 }}
         animate={{ opacity: 1, scale: 1 }}
-        style={{ transformOrigin: "395px 314px" }}
+        style={{ transformBox: "fill-box", transformOrigin: "center" }}
         transition={{ duration: 0.7, delay: 2.4, ease: [0.34, 1.56, 0.64, 1] }}
       >
         <path d={DOT.d} transform={DOT.transform} fill="url(#lockup-ember-sm)" />

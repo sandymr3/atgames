@@ -7,7 +7,7 @@ import { STUDIO, VALUES } from "@/lib/site";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "AT Games builds games out of Tamil literature, folklore and fear — written in Tamil first, localised outward.",
+    "ATTI Games builds games out of Tamil literature, folklore and fear — written in Tamil first, localised outward.",
 };
 
 export default function AboutPage() {
