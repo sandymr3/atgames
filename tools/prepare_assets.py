@@ -6,7 +6,7 @@ Prepare web assets for the ATTI Games site from the raw brand assets in ../asset
 Outputs land in public/ and are committed, so the Next.js build never depends on
 Python. Re-run this only when the source art in assets/ changes.
 
-Three jobs:
+Four jobs:
 
 1. BRAND  - The logo PDF stores the AT monogram as vector outlines that are
             *clipped over an embedded raster* holding the orange gradient. We
@@ -20,6 +20,9 @@ Three jobs:
             doubling up against a baked-in copy of itself.
 
 3. POSTER - Web-sized derivatives of both title cards for the gallery / OG.
+
+4. STEAM  - Screenshots, banners and clips from the store page. Run on its own
+            with `python tools/prepare_assets.py steam`.
 """
 
 from __future__ import annotations
@@ -28,6 +31,7 @@ import base64
 import io
 import re
 import shutil
+import urllib.request
 from pathlib import Path
 
 import fitz  # PyMuPDF
@@ -45,6 +49,35 @@ GAME = PUBLIC / "game"
 POSTER_EN = SRC / "title card poster copy.jpg.jpeg"
 POSTER_TA = SRC / "title card poster - tamil copy.jpg.jpeg"
 LOGO_PDF = SRC / "at complite.pdf"
+
+# The store page, saved from the browser. Clips and the capsule are not in the
+# saved folder, so those come off Steam's CDN.
+STEAM_SAVED = Path.home() / "Downloads" / "Fourth Shadow_நான்காம் நிழல் on Steam_files"
+STEAM_CDN = "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/5105680"
+STEAM_CAPSULE = "4e590fb5d149cafd50b545b0f7517aa1757346c4/capsule_616x353.jpg"
+# in store order
+STEAM_SHOTS = (
+    "e39154064d1af1b239c0996ccc845ed5d7018f64",
+    "1b8bdde5bd2ca33eec9a6141fd393f2cbde003b4",
+    "8fcdb52bd1efbe13fbbcad51507fb492fc522036",
+    "ab53890a77c035e73c2f82e06204e3a7869d3c35",
+    "7245ce286958327dcf13a4e9c4bef9b8b2ef8b5e",
+    "1e64c037c3e8c928b9f5adedc9ec9b9d7fcd84ef",
+    "d618d7e58989ef2f0f8276922aff5e2cfdb96d5c",
+    "825d6fa238c7087615df1687940e9c650009bf3f",
+)
+STEAM_BANNERS = {
+    "escape": "33670b9dd04c226cc1a41283a8711482",
+    "survive": "2324879db6f6014abb4ccc110dd93bd6",
+    "resources": "f9e7ed459c6010bf885c867d1281d24d",
+    "discover": "62371596d6710659835afafdafd7245e",
+}
+STEAM_CLIPS = {
+    "escape": "8f27877f77a924aa6981b000a946adca",
+    "survive": "ec5a3649978b2978adb10cdec8e65427",
+    "resources": "f690d8e84dd86d597b1907b8ef36e772",
+    "discover": "de790301898357442b4fe2c6c8f30642",
+}
 
 # Brand gradient, sampled straight out of the logo raster. Hue runs 35deg (gold)
 # at the top-left of the mark down to 8deg (deep red) at the bottom-right.
@@ -449,13 +482,58 @@ def build_posters() -> None:
     print("poster -> poster-en.webp, poster-ta.webp, og.jpg")
 
 
+def fetch(url: str, out: Path) -> None:
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(req, timeout=60) as res:
+        out.write_bytes(res.read())
+
+
+def build_steam() -> None:
+    """Self-host the store page's media, so the site never hotlinks Steam."""
+    if not STEAM_SAVED.is_dir():
+        raise SystemExit(f"missing saved Steam page: {STEAM_SAVED}")
+    shots = GAME / "shots"
+    banners = GAME / "banners"
+    clips = GAME / "clips"
+    for d in (shots, banners, clips):
+        d.mkdir(parents=True, exist_ok=True)
+
+    for i, sid in enumerate(STEAM_SHOTS, 1):
+        im = Image.open(STEAM_SAVED / f"ss_{sid}.1920x1080.jpg").convert("RGB")
+        im.save(shots / f"shot-{i:02d}.webp", "WEBP", quality=84, method=6)
+        fit(im, 640).save(shots / f"shot-{i:02d}-sm.webp", "WEBP", quality=78, method=6)
+
+    for name, sid in STEAM_BANNERS.items():
+        im = Image.open(STEAM_SAVED / f"{sid}.avif").convert("RGB")
+        im.save(banners / f"{name}.webp", "WEBP", quality=86, method=6)
+
+    for name, sid in STEAM_CLIPS.items():
+        for ext in ("webm", "mp4"):
+            fetch(f"{STEAM_CDN}/extras/{sid}.{ext}", clips / f"{name}.{ext}")
+        poster = clips / f"{name}.poster.avif"
+        fetch(f"{STEAM_CDN}/extras/{sid}.poster.avif", poster)
+        Image.open(poster).convert("RGB").save(
+            clips / f"{name}.webp", "WEBP", quality=80, method=6
+        )
+        poster.unlink()
+
+    fetch(f"{STEAM_CDN}/{STEAM_CAPSULE}", GAME / "capsule.jpg")
+    print("steam -> shots/, banners/, clips/, capsule.jpg")
+
+
 if __name__ == "__main__":
     import sys
 
-    for missing in [p for p in (POSTER_EN, POSTER_TA, LOGO_PDF) if not p.exists()]:
-        raise SystemExit(f"missing source asset: {missing}")
-    steps = {"brand": build_brand, "scene": build_scene, "posters": build_posters}
+    steps = {
+        "brand": build_brand,
+        "scene": build_scene,
+        "posters": build_posters,
+        "steam": build_steam,
+    }
     want = [a.lstrip("-") for a in sys.argv[1:]] or list(steps)
+    if want != ["steam"]:
+        for missing in [p for p in (POSTER_EN, POSTER_TA, LOGO_PDF) if not p.exists()]:
+            raise SystemExit(f"missing source asset: {missing}")
     for name in want:
         if name not in steps:
             raise SystemExit(f"unknown step {name!r}; pick from {list(steps)}")

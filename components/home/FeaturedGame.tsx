@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
+import WishlistButton from "@/components/game/WishlistButton";
 import { GAMES } from "@/lib/site";
 
 const game = GAMES[0];
@@ -58,7 +59,7 @@ export default function FeaturedGame() {
         <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
           <div>
             <div className="flex items-center gap-4">
-              <span className="eyebrow">௦௨ / Now in production</span>
+              <span className="eyebrow">௦௨ / Coming soon to Steam</span>
               <span className="h-px flex-1 bg-white/10" />
             </div>
 
@@ -76,8 +77,8 @@ export default function FeaturedGame() {
             <dl className="mt-9 grid max-w-md grid-cols-2 gap-x-8 gap-y-5 border-t border-white/8 pt-7">
               {[
                 ["Genre", game.genre],
-                ["Status", game.status],
-                ["Target", game.year],
+                ["Platform", "Windows PC · Steam"],
+                ["Release", game.release],
                 ["Language", "தமிழ் · English"],
               ].map(([k, v]) => (
                 <div key={k}>
@@ -87,20 +88,23 @@ export default function FeaturedGame() {
               ))}
             </dl>
 
-            <Link
-              href={game.href}
-              className="group mt-11 inline-flex items-center gap-4"
-            >
-              <span className="text-[0.72rem] uppercase tracking-[0.24em] text-bone">
-                Open the case file
-              </span>
-              <span className="relative block h-px w-16 overflow-hidden bg-white/25">
-                <span className="absolute inset-0 -translate-x-full bg-ember transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-0" />
-              </span>
-              <span className="text-ember transition-transform duration-500 group-hover:translate-x-1.5">
-                →
-              </span>
-            </Link>
+            <div className="mt-11 flex flex-wrap items-center gap-x-10 gap-y-6">
+              <Link
+                href={game.href}
+                className="group inline-flex items-center gap-4"
+              >
+                <span className="text-[0.72rem] uppercase tracking-[0.24em] text-bone">
+                  Open the case file
+                </span>
+                <span className="relative block h-px w-16 overflow-hidden bg-white/25">
+                  <span className="absolute inset-0 -translate-x-full bg-ember transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-0" />
+                </span>
+                <span className="text-ember transition-transform duration-500 group-hover:translate-x-1.5">
+                  →
+                </span>
+              </Link>
+              <WishlistButton />
+            </div>
           </div>
 
           {/* the real chalk logotype, lifted off the poster */}

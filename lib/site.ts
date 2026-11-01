@@ -69,15 +69,112 @@ export const GAMES = [
     slug: "fourth-shadow",
     title: "Fourth Shadow",
     ta: "நான்காம் நிழல்",
-    status: "In development",
-    year: "2026",
-    genre: "First-person psychological horror",
+    status: "Coming soon",
+    release: "Coming soon",
+    genre: "First-person survival horror",
     logline:
-      "In a rural government school, three curious students enter a forbidden place, unaware of the terrifying mysteries awaiting them.",
+      "Three school boys enter an abandoned haunted school out of curiosity, and a mysterious ritual awakens something inside it.",
     href: "/games/fourth-shadow",
     cover: "/game/poster-en.webp",
   },
 ] as const;
+
+/**
+ * Everything below mirrors the Steam store page, which is the source of truth.
+ * Media comes from `python tools/prepare_assets.py steam`.
+ */
+export const FOURTH_SHADOW = {
+  description:
+    "Three school boys enter an abandoned haunted school out of curiosity. They perform a mysterious ritual, unknowingly awakening something. As darkness takes over, fear becomes their worst nightmare. Will they escape the haunted school alive, or will something keep them there forever?",
+  story: [
+    "Three school boys enter an abandoned haunted school out of curiosity.",
+    "They perform a mysterious ritual, unknowingly awakening something.",
+    "As darkness takes over, fear becomes their worst nightmare.",
+    "Will they escape the haunted school alive, or will something keep them there forever?",
+  ],
+  features: [
+    {
+      slug: "escape",
+      title: "Creepy things have happened",
+      body: "In the aftermath of the boys' foolishness, escaping the school alive, away from the darkness and the unknown, becomes all that matters.",
+    },
+    {
+      slug: "survive",
+      title: "Survival is the only option",
+      body: "Overcome your fear of the darkness and the unknown to survive the mysterious creature that wants you dead.",
+    },
+    {
+      slug: "resources",
+      title: "Manage your resources",
+      body: "Collect and manage the resources spread throughout the school, and be careful how you use them.",
+    },
+    {
+      slug: "discover",
+      title: "Discover the mysterious",
+      body: "Surrounded by an unknown environment, discover the mysterious things the school was hiding to find a way to stay alive.",
+    },
+  ],
+  screenshots: [
+    "Two school boys in white shirts stand before the barred entrance of the school at night",
+    "A ritual circle of skulls and candles around a pentagram on the floor",
+    "A blood-streaked school corridor in torchlight",
+    "A teddy bear sitting on a wooden chair in a dark room",
+    "A boy seated on a chair in front of an old computer",
+    "A rusted electrical panel on a classroom wall",
+    "A steel cupboard between a rocket poster and a map of India",
+    "A library with bookshelves, a table and chairs in torchlight",
+  ],
+  tags: [
+    "Exploration",
+    "Puzzle",
+    "3D",
+    "Adventure",
+    "First-Person",
+    "Horror",
+    "Multiple Endings",
+    "Story Rich",
+    "1990's",
+    "Retro",
+    "Survival Horror",
+    "Indie",
+    "Singleplayer",
+    "Gore",
+  ],
+  facts: [
+    ["Release", "Coming soon"],
+    ["Developer", "Atti Games"],
+    ["Publisher", "Atti Games"],
+    ["Platform", "Windows PC"],
+    ["Features", "Single-player · Family Sharing"],
+  ],
+  languages: ["English", "Tamil"],
+  mature:
+    "This game contains horror, suspense, and disturbing imagery, including hostile creatures and human bones. Players may encounter bloody props, graphic gore, dark environments, sudden scares, and unsettling audio-visual effects. The game explores themes of fear, danger, and survival that may be disturbing to some players.",
+  requirements: [
+    {
+      tier: "Minimum",
+      specs: [
+        ["OS", "Windows 10"],
+        ["Processor", "Intel Core i5-7400 or AMD Ryzen 3 2300X"],
+        ["Memory", "8 GB RAM"],
+        ["Graphics", "NVIDIA GeForce GTX 1650 / AMD Radeon RX 570"],
+        ["DirectX", "Version 11"],
+        ["Storage", "8 GB available space"],
+      ],
+    },
+    {
+      tier: "Recommended",
+      specs: [
+        ["OS", "Windows 11"],
+        ["Processor", "Intel Core i7-9700 or AMD Ryzen 5 3600X"],
+        ["Memory", "8 GB RAM"],
+        ["Graphics", "NVIDIA GTX 1660 Ti / AMD RX 5600 XT or better"],
+        ["DirectX", "Version 12"],
+        ["Storage", "8 GB available space"],
+      ],
+    },
+  ],
+} as const;
 
 export const UPCOMING = [
   { code: "PROJECT உ", note: "Untitled horror game" },
