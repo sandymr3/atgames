@@ -4,15 +4,41 @@ import Link from "next/link";
 import HorrorTheme from "@/components/game/HorrorTheme";
 import ShadowHero from "@/components/game/ShadowHero";
 import BoardPanel from "@/components/game/BoardPanel";
-import TrailerFrame from "@/components/game/TrailerFrame";
+import FeatureClip from "@/components/game/FeatureClip";
+import GameFacts from "@/components/game/GameFacts";
 import PlatformIcons from "@/components/game/PlatformIcons";
+import ScreenshotGallery from "@/components/game/ScreenshotGallery";
+import SystemRequirements from "@/components/game/SystemRequirements";
+import WishlistButton from "@/components/game/WishlistButton";
 import Reveal from "@/components/Reveal";
+import { FOURTH_SHADOW, GAMES, STEAM_URL } from "@/lib/site";
+
+const game = GAMES[0];
 
 export const metadata: Metadata = {
   title: "Fourth Shadow / நான்காம் நிழல்",
-  description:
-    "A first-person psychological horror game set in a Tamil government school. Class 7-A. Twelve buds, three flowers, fifteen in total.",
-  openGraph: { images: ["/game/poster-en.webp"] },
+  description: FOURTH_SHADOW.description,
+  openGraph: { images: ["/game/capsule.jpg"] },
+};
+
+/* Search engines read this; every value comes from the Steam page. */
+const JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "VideoGame",
+  name: game.title,
+  alternateName: game.ta,
+  description: FOURTH_SHADOW.description,
+  url: "https://atgames.studio/games/fourth-shadow",
+  image: "https://atgames.studio/game/capsule.jpg",
+  genre: ["Horror", "Survival Horror", "Adventure"],
+  gamePlatform: "PC",
+  operatingSystem: "Windows",
+  applicationCategory: "Game",
+  playMode: "SinglePlayer",
+  inLanguage: ["en", "ta"],
+  author: { "@type": "Organization", name: "Atti Games" },
+  publisher: { "@type": "Organization", name: "Atti Games" },
+  sameAs: STEAM_URL,
 };
 
 /* The couplet already chalked on the blackboard in the key art —
@@ -32,13 +58,28 @@ const ATTENDANCE = [
   { ta: "மொத்தம்", en: "Total", value: "15" },
 ];
 
+function SectionLabel({ children }: { children: string }) {
+  return (
+    <div className="mb-10 flex items-center gap-5">
+      <h2 className="eyebrow text-chalk/40">{children}</h2>
+      <span className="h-px flex-1 bg-chalk/10" />
+    </div>
+  );
+}
+
 export default function FourthShadowPage() {
   return (
     <>
       <HorrorTheme />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(JSON_LD).replace(/</g, "\\u003c"),
+        }}
+      />
       <ShadowHero />
 
-      {/* ── synopsis ─────────────────────────────────────────────────── */}
+      {/* ── about ────────────────────────────────────────────────────── */}
       <section className="relative mx-auto max-w-[1200px] px-5 py-24 sm:px-8 sm:py-32">
         <Reveal>
           <BoardPanel>
@@ -60,26 +101,19 @@ export default function FourthShadowPage() {
                 </p>
               </div>
 
-              <div className="space-y-6">
-                <p className="text-[1.02rem] leading-relaxed text-chalk/85">
-                  In 1997, a government school on the edge of a Kongu village
-                  loses three children in a single term. The register is
-                  corrected each time, in the same hand, in the same chalk.
-                </p>
-                <p className="text-[0.94rem] leading-relaxed text-chalk/55">
-                  You are the substitute teacher sent to close the school down.
-                  You have one night, one register, and a room that counts
-                  fifteen when only fourteen answer. Class 7-A has always had a
-                  fourth shadow on the back wall — the fluorescent tube throws
-                  three.
-                </p>
-                <p className="text-[0.94rem] leading-relaxed text-chalk/55">
-                  Fourth Shadow is a first-person horror game about attendance:
-                  who is counted, who is quietly removed from the count, and
-                  what a community agrees not to see. There is no weapon. There
-                  is a register, a piece of chalk, and the truth of what
-                  happened, which you can write down or leave blank.
-                </p>
+              <div className="space-y-5">
+                {FOURTH_SHADOW.story.map((line, i) => (
+                  <p
+                    key={line}
+                    className={
+                      i === 0
+                        ? "text-[1.02rem] leading-relaxed text-chalk/85"
+                        : "text-[0.94rem] leading-relaxed text-chalk/60"
+                    }
+                  >
+                    {line}
+                  </p>
+                ))}
               </div>
             </div>
 
@@ -103,38 +137,67 @@ export default function FourthShadowPage() {
         </Reveal>
       </section>
 
-      {/* ── teaser ───────────────────────────────────────────────────── */}
+      {/* ── at a glance ──────────────────────────────────────────────── */}
       <section className="mx-auto max-w-[1200px] px-5 pb-24 sm:px-8 sm:pb-32">
-        <div className="mb-10 flex items-center gap-5">
-          <p className="eyebrow text-chalk/40">Teaser</p>
-          <span className="h-px flex-1 bg-chalk/10" />
-        </div>
+        <SectionLabel>At a glance</SectionLabel>
         <Reveal>
-          <TrailerFrame />
+          <GameFacts />
+        </Reveal>
+      </section>
+
+      {/* ── escape the school ────────────────────────────────────────── */}
+      <section className="mx-auto max-w-[1200px] px-5 pb-24 sm:px-8 sm:pb-32">
+        <SectionLabel>Escape the school</SectionLabel>
+        <div className="space-y-20 sm:space-y-28">
+          {FOURTH_SHADOW.features.map((feature) => (
+            <Reveal key={feature.slug}>
+              <article>
+                <Image
+                  src={`/game/banners/${feature.slug}.webp`}
+                  alt={feature.title}
+                  width={1500}
+                  height={250}
+                  unoptimized
+                  className="h-auto w-full"
+                />
+                <div className="mt-8 grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+                  <p className="text-[0.98rem] leading-relaxed text-chalk/70">
+                    {feature.body}
+                  </p>
+                  <FeatureClip
+                    slug={feature.slug}
+                    label={`Gameplay clip: ${feature.title}`}
+                  />
+                </div>
+              </article>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* ── screenshots ──────────────────────────────────────────────── */}
+      <section className="mx-auto max-w-[1440px] px-5 pb-24 sm:px-8 sm:pb-32">
+        <SectionLabel>Screenshots</SectionLabel>
+        <Reveal>
+          <ScreenshotGallery captions={FOURTH_SHADOW.screenshots} />
         </Reveal>
       </section>
 
       {/* ── platforms ────────────────────────────────────────────────── */}
       <section className="mx-auto max-w-[1200px] px-5 pb-24 sm:px-8 sm:pb-32">
-        <div className="mb-10 flex items-center gap-5">
-          <p className="eyebrow text-chalk/40">Available on</p>
-          <span className="h-px flex-1 bg-chalk/10" />
-        </div>
+        <SectionLabel>Platforms</SectionLabel>
         <Reveal>
           <PlatformIcons />
         </Reveal>
         <p className="mt-6 text-[0.66rem] uppercase tracking-[0.2em] text-chalk/25">
-          Platforms are targets, not commitments. Store pages open when the
-          build is stable.
+          Coming to Windows PC on Steam. Console versions have not been
+          announced.
         </p>
       </section>
 
       {/* ── key art ──────────────────────────────────────────────────── */}
       <section className="mx-auto max-w-[1440px] px-5 pb-24 sm:px-8 sm:pb-32">
-        <div className="mb-10 flex items-center gap-5">
-          <p className="eyebrow text-chalk/40">Key art</p>
-          <span className="h-px flex-1 bg-chalk/10" />
-        </div>
+        <SectionLabel>Key art</SectionLabel>
         <div className="grid gap-5 md:grid-cols-2">
           {[
             { src: "/game/poster-ta.webp", label: "நான்காம் நிழல்" },
@@ -157,6 +220,35 @@ export default function FourthShadowPage() {
               </figure>
             </Reveal>
           ))}
+        </div>
+      </section>
+
+      {/* ── system requirements ──────────────────────────────────────── */}
+      <section className="mx-auto max-w-[1200px] px-5 pb-24 sm:px-8 sm:pb-32">
+        <SectionLabel>System requirements</SectionLabel>
+        <Reveal>
+          <SystemRequirements />
+        </Reveal>
+      </section>
+
+      {/* ── mature content ───────────────────────────────────────────── */}
+      <section className="mx-auto max-w-[1200px] px-5 pb-24 sm:px-8 sm:pb-32">
+        <SectionLabel>Mature content</SectionLabel>
+        <p className="max-w-3xl text-[0.9rem] leading-relaxed text-chalk/55">
+          {FOURTH_SHADOW.mature}
+        </p>
+      </section>
+
+      {/* ── wishlist ─────────────────────────────────────────────────── */}
+      <section className="border-t border-chalk/8">
+        <div className="mx-auto flex max-w-[1200px] flex-col items-start gap-6 px-5 py-20 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+          <div>
+            <p className="tamil text-lg text-chalk/70">{game.ta}</p>
+            <p className="mt-2 text-[0.7rem] uppercase tracking-[0.24em] text-chalk/30">
+              Coming soon to Steam
+            </p>
+          </div>
+          <WishlistButton />
         </div>
       </section>
 

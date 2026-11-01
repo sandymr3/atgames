@@ -1,7 +1,10 @@
+import { STEAM_URL } from "@/lib/site";
+
 const PLATFORMS = [
   {
     name: "PC / Steam",
-    note: "Wishlist soon",
+    note: "Wishlist now",
+    href: STEAM_URL,
     // simplified Steam mark
     path: "M12 2a10 10 0 0 0-9.96 9.16l5.34 2.2a2.82 2.82 0 0 1 1.6-.5h.14l2.37-3.44v-.05a3.77 3.77 0 1 1 3.77 3.77h-.09l-3.38 2.42v.12a2.83 2.83 0 0 1-5.6.55L2.4 14.7A10 10 0 1 0 12 2Zm-3.2 15.16a2.18 2.18 0 0 0 3.03-1.99 2.18 2.18 0 0 0-3-2l1.13.47a1.6 1.6 0 1 1-1.24 2.96l-1.1-.46a2.18 2.18 0 0 0 1.18 1.02Zm6.46-4.9a2.52 2.52 0 1 0 0-5.03 2.52 2.52 0 0 0 0 5.03Zm0-.62a1.9 1.9 0 1 1 0-3.79 1.9 1.9 0 0 1 0 3.8Z",
   },
@@ -27,28 +30,46 @@ export const STEAM_PATH = PLATFORMS[0].path;
 export default function PlatformIcons() {
   return (
     <ul className="grid grid-cols-2 gap-px overflow-hidden border border-chalk/10 bg-chalk/10 sm:grid-cols-4">
-      {PLATFORMS.map((p) => (
-        <li
-          key={p.name}
-          className="group flex flex-col items-start gap-5 bg-[#0a0908] px-6 py-8 transition-colors duration-500 hover:bg-[#120e0e]"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            aria-hidden
-            className="h-7 w-7 fill-chalk/45 transition-colors duration-500 group-hover:fill-blood-lit"
-          >
-            <path d={p.path} />
-          </svg>
-          <div>
-            <p className="text-[0.72rem] uppercase tracking-[0.16em] text-chalk/80">
-              {p.name}
-            </p>
-            <p className="mt-1.5 text-[0.62rem] uppercase tracking-[0.22em] text-chalk/30">
-              {p.note}
-            </p>
-          </div>
-        </li>
-      ))}
+      {PLATFORMS.map((p) => {
+        const card = (
+          <>
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden
+              className="h-7 w-7 fill-chalk/45 transition-colors duration-500 group-hover:fill-blood-lit"
+            >
+              <path d={p.path} />
+            </svg>
+            <div>
+              <p className="text-[0.72rem] uppercase tracking-[0.16em] text-chalk/80">
+                {p.name}
+              </p>
+              <p className="mt-1.5 text-[0.62rem] uppercase tracking-[0.22em] text-chalk/30">
+                {p.note}
+              </p>
+            </div>
+          </>
+        );
+        const cardClass =
+          "group flex h-full flex-col items-start gap-5 bg-[#0a0908] px-6 py-8 transition-colors duration-500 hover:bg-[#120e0e]";
+
+        return (
+          <li key={p.name}>
+            {"href" in p ? (
+              <a
+                href={p.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cardClass}
+              >
+                {card}
+              </a>
+            ) : (
+              <div className={cardClass}>{card}</div>
+            )}
+          </li>
+        );
+      })}
     </ul>
   );
 }

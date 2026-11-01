@@ -5,6 +5,7 @@ import { useRef } from "react";
 import { useReducedMotion } from "motion/react";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import TamilParticleBackground from "@/components/TamilParticleBackground";
+import WishlistButton from "@/components/game/WishlistButton";
 
 /* ============================================================================
    The classroom, taken apart.
@@ -338,9 +339,12 @@ export default function ShadowHero() {
         </div>
 
         <div className="flex items-end justify-between gap-6">
-          <p className="max-w-xs text-[0.68rem] uppercase leading-relaxed tracking-[0.2em] text-chalk/40">
-            First-person psychological horror · 2026
-          </p>
+          <div>
+            <p className="max-w-xs text-[0.68rem] uppercase leading-relaxed tracking-[0.2em] text-chalk/40">
+              First-person survival horror · Coming soon
+            </p>
+            <WishlistButton className="pointer-events-auto mt-4" />
+          </div>
           <p className="hidden text-[0.62rem] uppercase tracking-[0.32em] text-chalk/35 sm:block">
             Scroll into the room
           </p>
