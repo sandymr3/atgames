@@ -6,7 +6,7 @@ import { CREDITS, SOCIALS, STUDIO } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Credits",
-  description: "The people behind AT Games, and where to find the studio.",
+  description: "The people behind ATTI Games, and where to find the studio.",
 };
 
 export default function CreditsPage() {

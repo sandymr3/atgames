@@ -7,7 +7,7 @@ import { GAMES, UPCOMING } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Games",
   description:
-    "Fourth Shadow / நான்காம் நிழல் and what comes after it, from AT Games.",
+    "Fourth Shadow / நான்காம் நிழல் and what comes after it, from ATTI Games.",
 };
 
 export default function GamesPage() {

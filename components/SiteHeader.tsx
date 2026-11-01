@@ -38,7 +38,7 @@ export default function SiteHeader() {
       <div className="mx-auto flex h-[74px] max-w-[1440px] items-center justify-between px-5 sm:px-8">
         <Link
           href="/"
-          aria-label="AT Games — home"
+          aria-label="ATTI Games — home"
           className="group flex items-center gap-3"
         >
           <svg
@@ -62,7 +62,7 @@ export default function SiteHeader() {
             <path d={MARK.d} transform={MARK.transform} fill="url(#hdr-grad)" />
           </svg>
           <span className="font-display text-[0.7rem] tracking-[0.32em] text-bone">
-            AT&nbsp;GAMES
+            ATTI&nbsp;GAMES
           </span>
         </Link>
 

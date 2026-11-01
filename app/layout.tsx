@@ -5,7 +5,7 @@ import SiteFooter from "@/components/SiteFooter";
 import CursorRing from "@/components/CursorRing";
 import "./globals.css";
 
-/* Michroma carries the wide, clipped-corner geometry of the AT GAMES wordmark;
+/* Michroma carries the wide, clipped-corner geometry of the ATTI GAMES wordmark;
    Sora does the reading; Noto Serif Tamil gives the Kural literary weight and
    feeds the glyph atlas in the particle field. */
 const michroma = Michroma({
@@ -30,13 +30,13 @@ const tamil = Noto_Serif_Tamil({
 export const metadata: Metadata = {
   metadataBase: new URL("https://atgames.studio"),
   title: {
-    default: "AT Games — Tamil myth, modern machines",
-    template: "%s — AT Games",
+    default: "ATTI Games — Tamil myth, modern machines",
+    template: "%s — ATTI Games",
   },
   description:
-    "AT Games is a game studio from Tamil Nadu building games out of Tamil literature, folklore and fear. Makers of Fourth Shadow / நான்காம் நிழல்.",
+    "ATTI Games is a game studio from Tamil Nadu building games out of Tamil literature, folklore and fear. Makers of Fourth Shadow / நான்காம் நிழல்.",
   openGraph: {
-    title: "AT Games — Tamil myth, modern machines",
+    title: "ATTI Games — Tamil myth, modern machines",
     description:
       "A game studio from Tamil Nadu. Makers of Fourth Shadow / நான்காம் நிழல்.",
     images: ["/og.jpg"],

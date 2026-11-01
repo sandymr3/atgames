@@ -1,4 +1,4 @@
-# AT Games — studio site
+# ATTI Games — studio site
 
 Next.js 16 (App Router) · Tailwind v4 · Motion (Framer Motion) · GSAP ScrollTrigger · Canvas 2D.
 

@@ -9,7 +9,7 @@ export default function SiteFooter() {
           <div>
             <p className="eyebrow">{STUDIO.location}</p>
             <p className="display mt-4 text-3xl sm:text-4xl">
-              <span className="ember-text">AT</span> GAMES
+              <span className="ember-text">ATTI</span> GAMES
             </p>
             <p className="tamil mt-3 max-w-xs text-sm leading-relaxed text-ash-400">
               எண்ணித் துணிக கருமம்.

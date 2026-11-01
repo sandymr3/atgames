@@ -1,5 +1,5 @@
 export const STUDIO = {
-  name: "AT Games",
+  name: "ATTI Games",
   tagline: "Tamil myth, modern machines.",
   location: "Tamil Nadu, India",
   founded: "2024",
@@ -105,6 +105,6 @@ export const SOCIALS = [
   { label: "Instagram", handle: "@atgames.studio", href: "#" },
   { label: "YouTube", handle: "/@atgames", href: "#" },
   { label: "Discord", handle: "discord.gg/atgames", href: "#" },
-  { label: "Steam", handle: "AT Games", href: "#" },
+  { label: "Steam", handle: "ATTI Games", href: "#" },
   { label: "itch.io", handle: "atgames.itch.io", href: "#" },
 ] as const;
