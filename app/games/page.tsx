@@ -72,9 +72,9 @@ export default function GamesPage() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`${game.title} on Steam`}
-              className="absolute right-4 top-4 z-10 grid h-9 w-9 place-items-center border border-white/15 bg-ink-900/80 text-bone backdrop-blur transition-colors duration-300 hover:border-ember hover:text-ember"
+              className="absolute right-5 top-5 z-10 grid h-14 w-14 place-items-center border border-white/15 bg-ink-900/80 text-bone backdrop-blur transition-colors duration-300 hover:border-ember hover:text-ember"
             >
-              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden>
+              <svg viewBox="0 0 24 24" className="h-8 w-8" fill="currentColor" aria-hidden>
                 <path d={STEAM_PATH} />
               </svg>
             </a>
