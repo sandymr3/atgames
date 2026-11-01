@@ -22,6 +22,8 @@ const PLATFORMS = [
   },
 ] as const;
 
+export const STEAM_PATH = PLATFORMS[0].path;
+
 export default function PlatformIcons() {
   return (
     <ul className="grid grid-cols-2 gap-px overflow-hidden border border-chalk/10 bg-chalk/10 sm:grid-cols-4">
