@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
-import { GAMES, UPCOMING } from "@/lib/site";
+import { STEAM_PATH } from "@/components/game/PlatformIcons";
+import { GAMES, STEAM_URL, UPCOMING } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Games",
@@ -22,7 +23,7 @@ export default function GamesPage() {
 
       <div className="mt-20 space-y-6">
         {GAMES.map((game) => (
-          <Reveal key={game.slug}>
+          <Reveal key={game.slug} className="relative">
             <Link
               href={game.href}
               className="group relative grid overflow-hidden border border-white/8 transition-colors duration-500 hover:border-ember/40 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]"
@@ -66,6 +67,17 @@ export default function GamesPage() {
                 </div>
               </div>
             </Link>
+            <a
+              href={STEAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${game.title} on Steam`}
+              className="absolute right-5 top-5 z-10 grid h-14 w-14 place-items-center border border-white/15 bg-ink-900/80 text-bone backdrop-blur transition-colors duration-300 hover:border-ember hover:text-ember"
+            >
+              <svg viewBox="0 0 24 24" className="h-8 w-8" fill="currentColor" aria-hidden>
+                <path d={STEAM_PATH} />
+              </svg>
+            </a>
           </Reveal>
         ))}
 

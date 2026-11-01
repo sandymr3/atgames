@@ -42,7 +42,7 @@ export default function CreditsPage() {
                 />
                 <ContributorAvatar
                   photo={c.photo}
-                  label={c.name !== "—" ? c.name : c.role}
+                  label={c.name}
                 />
                 {/* display:contents at sm+ so these three lines drop straight
                     into the row's grid columns instead of staying stacked */}
@@ -113,6 +113,8 @@ export default function CreditsPage() {
                   <Reveal key={s.label} delay={i * 0.05}>
                     <a
                       href={s.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="group relative flex h-full items-center justify-between gap-4 bg-ink-900 px-6 py-6 transition-colors duration-500 hover:bg-ink-800"
                     >
                       <span>
@@ -129,9 +131,6 @@ export default function CreditsPage() {
                 ))}
               </ul>
 
-              <p className="mt-6 text-[0.72rem] uppercase tracking-[0.16em] text-ash-500">
-                Handles are placeholders until the accounts are live.
-              </p>
             </div>
           </div>
         </div>

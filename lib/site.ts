@@ -3,7 +3,7 @@ export const STUDIO = {
   tagline: "Tamil myth, modern machines.",
   location: "Tamil Nadu, India",
   founded: "2024",
-  email: "hello@atgames.studio",
+  email: "atindegames@gmail.com",
 } as const;
 
 export const NAV = [
@@ -61,6 +61,9 @@ export const VALUES = [
   },
 ] as const;
 
+export const STEAM_URL =
+  "https://store.steampowered.com/app/5105680/Fourth_Shadow%E0%AE%A8%E0%AE%BE%E0%AE%A9%E0%AF%8D%E0%AE%95%E0%AE%BE%E0%AE%AE%E0%AF%8D_%E0%AE%A8%E0%AE%BF%E0%AE%B4%E0%AE%B2%E0%AF%8D/";
+
 export const GAMES = [
   {
     slug: "fourth-shadow",
@@ -70,15 +73,15 @@ export const GAMES = [
     year: "2026",
     genre: "First-person psychological horror",
     logline:
-      "A government school in the Kongu belt. Class 7-A. Twelve buds, three flowers, fifteen in total — and one shadow too many at the back of the room.",
+      "In a rural government school, three curious students enter a forbidden place, unaware of the terrifying mysteries awaiting them.",
     href: "/games/fourth-shadow",
     cover: "/game/poster-en.webp",
   },
 ] as const;
 
 export const UPCOMING = [
-  { code: "PROJECT ௨", note: "Untitled — village folklore, co-op" },
-  { code: "PROJECT ௩", note: "Untitled — Sangam-era action" },
+  { code: "PROJECT உ", note: "Untitled horror game" },
+  { code: "PROJECT ங", note: "Untitled simulation game" },
 ] as const;
 
 /**
@@ -88,23 +91,16 @@ export const UPCOMING = [
  * the studio mark when it's null, so entries without a photo never look broken.
  */
 export const CREDITS = [
-  { role: "Creative Director", name: "—", ta: "படைப்பு இயக்குநர்", photo: null },
-  { role: "Game Design", name: "—", ta: "விளையாட்டு வடிவமைப்பு", photo: null },
-  { role: "Art Direction", name: "—", ta: "கலை இயக்கம்", photo: null },
-  { role: "Environment & Lighting", name: "—", ta: "சூழல் & ஒளி", photo: null },
-  { role: "Narrative & Tamil Writing", name: "—", ta: "கதை & தமிழ் எழுத்து", photo: null },
-  { role: "Sound Design", name: "—", ta: "ஒலி வடிவமைப்பு", photo: null },
-  { role: "Engineering", name: "—", ta: "பொறியியல்", photo: null },
-  { role: "Web Dev & Tech Support", name: "—", ta: "இணையதளம் & தொழில்நுட்ப ஆதரவு", photo: null },
-  { role: "Marketing", name: "—", ta: "சந்தைப்படுத்தல்", photo: null },
+  { role: "Creative Director", name: "Ganesh Ram", ta: "படைப்பு இயக்குநர்", photo: null },
+  { role: "Game Design", name: "Allwyn", ta: "விளையாட்டு வடிவமைப்பு", photo: null },
+  { role: "Art Direction", name: "Vijaysundar", ta: "கலை இயக்கம்", photo: null },
+  { role: "Character Design", name: "Guru Prakash", ta: "கதாபாத்திர வடிவமைப்பு", photo: null },
+  { role: "Sound Design", name: "Brington", ta: "ஒலி வடிவமைப்பு", photo: null },
+  { role: "Concept Artist", name: "Lokesh Kumar", ta: "கருத்து ஓவியர்", photo: null },
+  { role: "Video & Poster Editor", name: "Suthish", ta: "காணொளி & சுவரொட்டி தொகுப்பாளர்", photo: null },
 ] as const;
 
-/** Handles are placeholders until the accounts exist. */
 export const SOCIALS = [
-  { label: "X / Twitter", handle: "@atgames", href: "#" },
-  { label: "Instagram", handle: "@atgames.studio", href: "#" },
-  { label: "YouTube", handle: "/@atgames", href: "#" },
-  { label: "Discord", handle: "discord.gg/atgames", href: "#" },
-  { label: "Steam", handle: "ATTI Games", href: "#" },
-  { label: "itch.io", handle: "atgames.itch.io", href: "#" },
+  { label: "Steam", handle: "Fourth Shadow / நான்காம் நிழல்", href: STEAM_URL },
+  { label: "LinkedIn", handle: "atgame", href: "https://www.linkedin.com/posts/atgame_indiangamedevelopment-tamilgame-horrorgame-activity-7516859555180630016-Rbkv" },
 ] as const;

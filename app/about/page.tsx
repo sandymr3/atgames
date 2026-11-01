@@ -29,10 +29,11 @@ export default function AboutPage() {
           </Reveal>
           <Reveal delay={0.15}>
             <p className="mt-10 max-w-2xl text-[1.02rem] leading-relaxed text-ash-300">
-              {STUDIO.name} is a small studio in {STUDIO.location}. We take the
-              oldest living literary tradition in the world and put it where it
-              has hardly been — inside a game engine, at 60 frames a second,
-              with the lights off.
+              {STUDIO.name} is a small independent game development studio passionate
+              about creating unique gaming experiences rooted in Tamil
+              heritage, culture, and rural traditions. Our games bring original
+              stories to life through distinctive gameplay, immersive
+              environments, and meaningful narratives.
             </p>
           </Reveal>
         </div>
