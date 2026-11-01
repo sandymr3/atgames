@@ -102,5 +102,8 @@ export const CREDITS = [
 
 export const SOCIALS = [
   { label: "Steam", handle: "Fourth Shadow / நான்காம் நிழல்", href: STEAM_URL },
-  { label: "LinkedIn", handle: "atgame", href: "https://www.linkedin.com/posts/atgame_indiangamedevelopment-tamilgame-horrorgame-activity-7516859555180630016-Rbkv" },
+  { label: "LinkedIn", handle: "Atti Games", href: "https://www.linkedin.com/posts/atgame_indiangamedevelopment-tamilgame-horrorgame-activity-7516859555180630016-Rbkv" },
+  { label: "Instagram", handle: "atti__games_", href: "https://www.instagram.com/atti__games_/reels/" },
+  { label: "YouTube", handle: "Atti Games", href: "https://youtube.com/@at_tamilgames?si=u9dUGuCSYb5qel8b" },
+  { label: "Discord", handle: "Atti Games", href: "https://discord.gg/9byucw2nGj" },
 ] as const;
